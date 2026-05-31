@@ -61,3 +61,19 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# ⭐️ Forçar arquivos-chave do Blazor a contar como C#
+*.razor linguist-language=C#
+*.cshtml linguist-language=C#
+
+# 🗑️ Ignorar pastas que não são o foco principal do projeto
+wwwroot/* linguist-vendored
+obj/* linguist-vendored
+bin/* linguist-vendored
+
+# 👍 Garantir que os seus arquivos .cs sejam contabilizados como C#
+*.cs linguist-detectable=true
+
+# ❌ Reduzir o peso de arquivos de marcação
+*.html linguist-detectable=false
+*.css linguist-detectable=false
