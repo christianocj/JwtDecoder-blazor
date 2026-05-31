@@ -36,3 +36,34 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.json-key {
+    color: #b10dc9;
+    font-weight: 700;
+}
+
+.json-string {
+    color: #008000;
+    font-weight: 600;
+}
+
+.json-number {
+    color: #ff8c00;
+    font-weight: 700;
+}
+
+.json-boolean {
+    color: #d7005e;
+    font-weight: 700;
+}
+
+.json-null {
+    color: #6a737d;
+    font-style: italic;
+    font-weight: 600;
+}
+
+.json-brace {
+    color: #0b2f4e;
+    font-weight: 800;
+}
