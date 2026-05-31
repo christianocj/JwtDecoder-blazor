@@ -1,7 +1,55 @@
 ﻿@page "/"
+@using JwtDecoder.Models
+@using JwtDecoder.Services
+@inject JwtDecoderService Decoder
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Decodificador JWT</PageTitle>
 
-<h1>Hello, world!</h1>
+<h3>Decodificador JWT</h3>
 
-Welcome to your new app.
+<textarea @bind="jwtInput" rows="5" style="width:100%" placeholder="Cole o JWT aqui...&#10;Exemplo: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"></textarea>
+<br />
+<button @onclick="DecodeToken" class="btn btn-primary mt-2">Decodificar</button>
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
+
+@if (decoded != null)
+{
+    <div class="mt-4  row">
+        <div class="col-6">
+            <h5>Header</h5>
+            <pre>@decoded.Header</pre>
+        </div>
+        
+        <div class="col-6">
+            <h5>Payload</h5>
+            <pre>@decoded.Payload</pre>
+        </div>
+        <h5>Signature (Base64Url)</h5>
+        <code>@decoded.Signature</code>
+    </div>
+}
+
+@code {
+    private string jwtInput = "";
+    private DecodedJwt? decoded;
+    private string? errorMessage;
+
+    private void DecodeToken()
+    {
+        try
+        {
+            decoded = Decoder.Decode(jwtInput);
+            errorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            decoded = null;
+            errorMessage = ex.Message;
+        }
+    }
+}
