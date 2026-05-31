@@ -1,0 +1,239 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+.jwt-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.jwt-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+    .jwt-header h1 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #1e2a3a;
+        letter-spacing: -0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+.credit {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+    .credit a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .credit a:hover {
+            text-decoration: underline;
+        }
+
+/* Input area */
+.token-input-area {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+    .token-input-area label {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        display: block;
+        color: #1e2a3a;
+        font-size: 1rem;
+    }
+
+.jwt-textarea {
+    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    border: 1px solid #ced4da;
+    border-radius: 14px;
+    padding: 0.9rem;
+    width: 100%;
+    background: white;
+    transition: 0.2s;
+    resize: vertical;
+}
+
+    .jwt-textarea:focus {
+        border-color: #0d6efd;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
+    }
+
+.btn-decode {
+    background: #0d6efd;
+    border: none;
+    border-radius: 40px;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    margin-top: 1.2rem;
+    transition: all 0.2s;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .btn-decode:hover {
+        background: #0b5ed7;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(13,110,253,0.2);
+    }
+
+/* Painéis */
+.panels-container {
+    display: flex;
+    gap: 1.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.panel {
+    flex: 1;
+    min-width: 280px;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.panel-header {
+    background: #f8f9fa;
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e2a3a;
+}
+
+.panel-content {
+    padding: 1.2rem;
+    background: white;
+}
+
+/* JSON viewer - TEMA CLARO */
+.json-viewer {
+    background: #fefefe;
+    border-radius: 14px;
+    padding: 1rem;
+    margin: 0;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: 1px solid #eef2f5;
+    color: #1e293b;
+}
+
+/* Syntax highlighting para tema claro */
+.json-key {
+    color: #a626a4;
+    font-weight: 600;
+}
+
+.json-string {
+    color: #50a14f;
+}
+
+.json-number {
+    color: #c18401;
+}
+
+.json-boolean {
+    color: #ca1243;
+}
+
+.json-null {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.json-brace {
+    color: #1e2a3a;
+    font-weight: 500;
+}
+
+/* Signature */
+.signature-area {
+    background: #f8f9fa;
+    border-radius: 18px;
+    padding: 1.2rem;
+    border: 1px solid #e9ecef;
+    margin-top: 0.5rem;
+}
+
+.signature-label {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #1e2a3a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.signature-value {
+    font-family: 'Fira Code', monospace;
+    background: white;
+    color: #1e2a3a;
+    padding: 0.9rem;
+    border-radius: 14px;
+    font-size: 0.75rem;
+    word-break: break-all;
+    border: 1px solid #e9ecef;
+}
+
+/* Footer */
+.jwt-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    text-align: center;
+    border-top: 1px solid #e9ecef;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* Alertas */
+.alert {
+    border-radius: 14px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+}
+
+.alert-info {
+    background: #d1e7ff;
+    border-left: 4px solid #0d6efd;
+    color: #084298;
+}

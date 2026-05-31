@@ -1,48 +1,120 @@
 ﻿@page "/"
 @using JwtDecoder.Models
 @using JwtDecoder.Services
+@using System.Text.RegularExpressions
 @inject JwtDecoderService Decoder
 @rendermode InteractiveServer
 
-<PageTitle>Decodificador JWT</PageTitle>
+<PageTitle>JWT Decoder - por Cristiano Júlio</PageTitle>
 
-<h3>Decodificador JWT</h3>
-
-<textarea @bind="jwtInput" rows="5" style="width:100%" placeholder="Cole o JWT aqui...&#10;Exemplo: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"></textarea>
-<br />
-<button @onclick="DecodeToken" class="btn btn-primary mt-2">Decodificar</button>
-
-@if (errorMessage != null)
-{
-    <div class="alert alert-danger mt-3">@errorMessage</div>
-}
-
-@if (decoded != null)
-{
-    <div class="mt-4  row">
-        <div class="col-6">
-            <h5>Header</h5>
-            <pre>@decoded.Header</pre>
+<div class="jwt-container">
+    <!-- Header com crédito -->
+    <div class="jwt-header">
+        <h1>🔓 JWT Decoder</h1>
+        <div class="credit">
+            feito por <a href="https://github.com/christianocj/jwt-decoder" target="_blank" rel="noopener noreferrer">Cristiano Júlio</a>
         </div>
-        
-        <div class="col-6">
-            <h5>Payload</h5>
-            <pre>@decoded.Payload</pre>
-        </div>
-        <h5>Signature (Base64Url)</h5>
-        <code>@decoded.Signature</code>
     </div>
-}
+
+    <!-- Área de input -->
+    <div class="token-input-area">
+        <label>📝 Token JWT</label>
+        <textarea @bind="jwtInput" rows="4" class="jwt-textarea"
+                  placeholder="Insira seu JWT aqui..."></textarea>
+        <button @onclick="DecodeToken" class="btn-decode">
+            ⚡ Decodificar
+        </button>
+    </div>
+
+    @if (errorMessage != null)
+    {
+        <div class="alert alert-danger">
+            <strong>❌ Erro:</strong> @errorMessage
+        </div>
+    }
+
+    @if (decoded != null)
+    {
+        <div class="panels-container">
+            <!-- Header Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span>📦 HEADER</span>
+                </div>
+                <div class="panel-content">
+                    <pre class="json-viewer">@HighlightJson(decoded.Header)</pre>
+                </div>
+            </div>
+
+            <!-- Payload Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span>📄 PAYLOAD</span>
+                </div>
+                <div class="panel-content">
+                    <pre class="json-viewer">@HighlightJson(decoded.Payload)</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="signature-area">
+            <div class="signature-label">
+                🔑 Signature (Base64Url)
+            </div>
+            <div class="signature-value">@decoded.Signature</div>
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(jwtInput) && errorMessage == null)
+    {
+        <div class="alert alert-info">
+            ✨ Token válido? Clique em "Decodificar"
+        </div>
+    }
+
+    <div class="jwt-footer">
+        <span>🕒 @currentDateTime</span>
+    </div>
+</div>
 
 @code {
     private string jwtInput = "";
     private DecodedJwt? decoded;
     private string? errorMessage;
+    private string currentDateTime = "";
+    private System.Timers.Timer? timer;
+
+    protected override void OnInitialized()
+    {
+        UpdateDateTime();
+        // Timer para atualizar a cada segundo
+        timer = new System.Timers.Timer(1000);
+        timer.Elapsed += (sender, e) =>
+        {
+            UpdateDateTime();
+            InvokeAsync(StateHasChanged);
+        };
+        timer.Start();
+    }
+
+    private void UpdateDateTime()
+    {
+        var now = DateTime.Now;
+        var culture = new System.Globalization.CultureInfo("pt-PT");
+        var dayOfWeek = culture.DateTimeFormat.GetDayName(now.DayOfWeek);
+        var month = culture.DateTimeFormat.GetMonthName(now.Month);
+        currentDateTime = $"{dayOfWeek}, {now.Day} de {month} de {now.Year}, {now:HH:mm:ss}";
+    }
 
     private void DecodeToken()
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(jwtInput))
+            {
+                errorMessage = "Por favor, insira um JWT.";
+                decoded = null;
+                return;
+            }
             decoded = Decoder.Decode(jwtInput);
             errorMessage = null;
         }
@@ -51,5 +123,50 @@
             decoded = null;
             errorMessage = ex.Message;
         }
+    }
+
+    private MarkupString HighlightJson(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return new MarkupString(string.Empty);
+
+        // Escapa caracteres HTML
+        var escaped = Regex.Replace(json, @"[&<>]", m =>
+        {
+            return m.Value switch
+            {
+                "&" => "&amp;",
+                "<" => "&lt;",
+                ">" => "&gt;",
+                _ => m.Value
+            };
+        });
+
+        // Aplicação de cores em ordem: primeiro strings, depois números, booleanos, null, chaves e pontuação
+        var result = Regex.Replace(escaped, @"(""(\\""|[^""])*"")", match =>
+            $"<span class='json-string'>{match.Value}</span>");
+
+        result = Regex.Replace(result, @"\b(\d+(\.\d+)?)\b", match =>
+            $"<span class='json-number'>{match.Value}</span>");
+
+        result = Regex.Replace(result, @"\b(true|false)\b", match =>
+            $"<span class='json-boolean'>{match.Value}</span>");
+
+        result = Regex.Replace(result, @"\bnull\b", match =>
+            $"<span class='json-null'>{match.Value}</span>");
+
+        result = Regex.Replace(result, @"([\{\}\[\]])", match =>
+            $"<span class='json-brace'>{match.Value}</span>");
+
+        // Chaves (nome antes dos dois pontos)
+        result = Regex.Replace(result, @"(""(\\""|[^""])*"")(\s*:)", match =>
+            $"<span class='json-key'>{match.Groups[1].Value}</span>{match.Groups[3].Value}");
+
+        return new MarkupString(result);
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
     }
 }
