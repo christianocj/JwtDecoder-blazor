@@ -1,10 +1,15 @@
 using JwtDecoder.Components;
+using JwtDecoder.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//Registar o serviço de decodificação de JWT como singleton para ser utilizado em toda a aplicação
+builder.Services.AddSingleton<JwtDecoderService>();
+
 
 var app = builder.Build();
 
