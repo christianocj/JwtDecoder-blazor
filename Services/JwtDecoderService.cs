@@ -1,6 +1,8 @@
 ﻿using JwtDecoder.Models;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace JwtDecoder.Services
 {
@@ -44,7 +46,11 @@ namespace JwtDecoder.Services
         private string FormatarJson(string json)
         {
             using var doc = JsonDocument.Parse(json);
-            return JsonSerializer.Serialize(doc, new JsonSerializerOptions { WriteIndented = true });
+            return JsonSerializer.Serialize(doc, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+            });
         }
     }
 }
